@@ -2,9 +2,6 @@ pkgconfig = import('pkgconfig')
 cpp = meson.get_compiler('cpp')
 
 qt5_dep = dependency('qt5', modules: ['Qml', 'Quick', 'Gui'])
-dep_qtappfw = [
-    dependency('qtappfw-weather'),
-]
 
 grpcpp_reflection_dep = cpp.find_library('grpc++_reflection')
 protoc = find_program('protoc')
@@ -35,7 +32,6 @@ grpc_deps = [
 
 window_mgnt_dep = [
     qt5_dep,
-    dep_qtappfw,
     grpc_deps,
 ]
 
