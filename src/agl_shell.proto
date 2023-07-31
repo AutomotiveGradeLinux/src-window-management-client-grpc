@@ -13,6 +13,7 @@ service AglShellManagerService {
        rpc GetOutputs(OutputRequest)				returns (ListOutputResponse) {}
        rpc SetAppNormal(NormalRequest)				returns (NormalResponse) {}
        rpc SetAppOnOutput(AppOnOutputRequest)			returns (AppOnOutputResponse) {}
+       rpc SetAppPosition(AppPositionRequest)			returns (AppPositionResponse) {}
 }
 
 message ActivateRequest {
@@ -22,6 +23,7 @@ message ActivateRequest {
 
 message ActivateResponse {
 };
+
 
 message DeactivateRequest {
        string app_id = 1;
@@ -86,4 +88,13 @@ message AppOnOutputRequest {
 };
 
 message AppOnOutputResponse {
+};
+
+message AppPositionRequest {
+       string app_id = 1;
+       int32 x = 2;
+       int32 y = 3;
+};
+
+message AppPositionResponse {
 };

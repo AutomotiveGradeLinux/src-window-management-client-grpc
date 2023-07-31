@@ -46,6 +46,7 @@ enum mode {
 	FULLSCREEN = 2,
 	FULLSCREEN_QT = 3,	//  rather than use rpc, use Qt API
 	ON_OTHER_OUTPUTS = 4,
+	SET_FLOAT_POS	= 5,
 };
 
 static QWindow *
@@ -81,10 +82,12 @@ int main(int argc, char *argv[])
 			mmode = ON_OTHER_OUTPUTS;
 		else if (strcmp(argv[1], "full_qt") == 0)
 			mmode = FULLSCREEN_QT;
+		else if (strcmp(argv[1], "position") == 0)
+			mmode = SET_FLOAT_POS;
 		else
 			assert(!"Invalid mode");
 
-		if (mmode != FLOAT && mmode != FULLSCREEN && mmode != ON_OTHER_OUTPUTS) {
+		if (mmode != FLOAT && mmode != FULLSCREEN && mmode != ON_OTHER_OUTPUTS && mmode != SET_FLOAT_POS) {
 			fprintf(stderr, "Will not use rpc\n");
 			goto skip;
 		}
@@ -117,6 +120,13 @@ int main(int argc, char *argv[])
 			}
 			client->SetAppOnOutput(myname.toStdString(),
 					       std::string(output_name));
+			break;
+		case SET_FLOAT_POS:
+			// this assumes the window is already running and
+			// floating; uses the same application so this needs
+			// to be first started as float.
+			client->SetAppPosition(myname.toStdString(), 550, 550);
+			exit(EXIT_SUCCESS);
 			break;
 		default:
 			break;
