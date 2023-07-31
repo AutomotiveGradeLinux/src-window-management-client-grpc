@@ -120,6 +120,22 @@ GrpcClient::SetAppPosition(const std::string& app_id, int32_t x, int32_t y)
 	return status.ok();
 }
 
+bool
+GrpcClient::SetAppScale(const std::string& app_id, int32_t width, int32_t height)
+{
+	agl_shell_ipc::AppScaleRequest request;
+
+	request.set_app_id(app_id);
+	request.set_width(width);
+	request.set_height(height);
+
+	grpc::ClientContext context;
+	::agl_shell_ipc::AppScaleResponse reply;
+
+	grpc::Status status = m_stub->SetAppScale(&context, request, &reply);
+	return status.ok();
+}
+
 grpc::Status
 GrpcClient::Wait(void)
 {
