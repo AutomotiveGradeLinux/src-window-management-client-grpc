@@ -4,17 +4,17 @@ syntax = "proto3";
 package agl_shell_ipc;
 
 service AglShellManagerService {
-       rpc ActivateApp(ActivateRequest)				returns (ActivateResponse) {}
-       rpc DeactivateApp(DeactivateRequest)			returns (DeactivateResponse) {}
-       rpc SetAppSplit(SplitRequest)				returns (SplitResponse) {}
-       rpc SetAppFloat(FloatRequest)				returns (FloatResponse) {}
-       rpc SetAppFullscreen(FullscreenRequest)			returns (FullscreenResponse) {}
-       rpc AppStatusState(AppStateRequest)			returns (stream AppStateResponse) {}
-       rpc GetOutputs(OutputRequest)				returns (ListOutputResponse) {}
-       rpc SetAppNormal(NormalRequest)				returns (NormalResponse) {}
-       rpc SetAppOnOutput(AppOnOutputRequest)			returns (AppOnOutputResponse) {}
-       rpc SetAppPosition(AppPositionRequest)			returns (AppPositionResponse) {}
-       rpc SetAppScale(AppScaleRequest)				returns (AppScaleResponse) {}
+       rpc ActivateApp(ActivateRequest)			returns (ActivateResponse) {}
+       rpc DeactivateApp(DeactivateRequest)		returns (DeactivateResponse) {}
+       rpc SetAppSplit(SplitRequest)			returns (SplitResponse) {}
+       rpc SetAppFloat(FloatRequest)			returns (FloatResponse) {}
+       rpc SetAppFullscreen(FullscreenRequest)		returns (FullscreenResponse) {}
+       rpc AppStatusState(AppStateRequest)		returns (stream AppStateResponse) {}
+       rpc GetOutputs(OutputRequest)			returns (ListOutputResponse) {}
+       rpc SetAppNormal(NormalRequest)			returns (NormalResponse) {}
+       rpc SetAppOnOutput(AppOnOutputRequest)		returns (AppOnOutputResponse) {}
+       rpc SetAppPosition(AppPositionRequest)		returns (AppPositionResponse) {}
+       rpc SetAppScale(AppScaleRequest)			returns (AppScaleResponse) {}
 }
 
 message ActivateRequest {
@@ -36,6 +36,9 @@ message DeactivateResponse {
 message SplitRequest {
        string app_id = 1;
        int32 tile_orientation = 2;
+       int32 width = 3;
+       int32 sticky = 4;
+       string output_name = 5;
 }
 
 message SplitResponse {

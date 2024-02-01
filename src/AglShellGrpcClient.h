@@ -94,8 +94,11 @@ public:
 	bool SetAppFloat(const std::string& app_id, int32_t x_pos, int32_t y_pos);
 	bool SetAppFullscreen(const std::string& app_id);
 	bool SetAppOnOutput(const std::string& app_id, const std::string& output);
+	bool SetAppNormal(const std::string& app_id);
 	bool SetAppPosition(const std::string& app_id, int32_t x, int32_t y);
 	bool SetAppScale(const std::string& app_id, int32_t width, int32_t height);
+	bool SetAppSplit(const std::string& app_id, uint32_t orientation,
+			 int32_t width, int32_t sticky, const std::string& output_name);
 	std::vector<std::string> GetOutputs();
 	void GetAppState();
 	void AppStatusState(Callback callback);

@@ -76,6 +76,20 @@ GrpcClient::SetAppFloat(const std::string& app_id, int32_t x_pos, int32_t y_pos)
 }
 
 bool
+GrpcClient::SetAppNormal(const std::string& app_id)
+{
+	agl_shell_ipc::NormalRequest request;
+
+	request.set_app_id(app_id);
+
+	grpc::ClientContext context;
+	::agl_shell_ipc::NormalResponse reply;
+
+	grpc::Status status = m_stub->SetAppNormal(&context, request, &reply);
+	return status.ok();
+}
+
+bool
 GrpcClient::SetAppFullscreen(const std::string& app_id)
 {
 	agl_shell_ipc::FullscreenRequest request;
@@ -90,12 +104,12 @@ GrpcClient::SetAppFullscreen(const std::string& app_id)
 }
 
 bool
-GrpcClient::SetAppOnOutput(const std::string& app_id, const std::string& output_name)
+GrpcClient::SetAppOnOutput(const std::string& app_id, const std::string &output)
 {
 	agl_shell_ipc::AppOnOutputRequest request;
 
 	request.set_app_id(app_id);
-	request.set_output(output_name);
+	request.set_output(output);
 
 	grpc::ClientContext context;
 	::agl_shell_ipc::AppOnOutputResponse reply;
@@ -133,6 +147,26 @@ GrpcClient::SetAppScale(const std::string& app_id, int32_t width, int32_t height
 	::agl_shell_ipc::AppScaleResponse reply;
 
 	grpc::Status status = m_stub->SetAppScale(&context, request, &reply);
+	return status.ok();
+}
+
+
+bool
+GrpcClient::SetAppSplit(const std::string& app_id, uint32_t orientation,
+			int32_t width, int32_t sticky, const std::string& output_name)
+{
+	agl_shell_ipc::SplitRequest request;
+
+	request.set_app_id(app_id);
+	request.set_output_name(output_name);
+	request.set_tile_orientation(orientation);
+	request.set_width(width);
+	request.set_sticky(sticky);
+
+	grpc::ClientContext context;
+	::agl_shell_ipc::SplitResponse reply;
+
+	grpc::Status status = m_stub->SetAppSplit(&context, request, &reply);
 	return status.ok();
 }
 

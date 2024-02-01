@@ -48,6 +48,7 @@ enum mode {
 	ON_OTHER_OUTPUTS = 4,
 	SET_FLOAT_POS	= 5,
 	SCALE	= 6,
+	SPLIT	= 7,
 };
 
 static QWindow *
@@ -87,17 +88,22 @@ int main(int argc, char *argv[])
 			mmode = SET_FLOAT_POS;
 		else if (strcmp(argv[1], "scale") == 0)
 			mmode = SCALE;
+		else if (strcmp(argv[1], "split") == 0)
+			mmode = SPLIT;
 		else
 			assert(!"Invalid mode");
 
 		if (mmode != FLOAT && mmode != FULLSCREEN && 
 		    mmode != ON_OTHER_OUTPUTS && mmode != SET_FLOAT_POS &&
-		    mmode != SCALE) {
+		    mmode != SCALE && mmode != SPLIT) {
 			fprintf(stderr, "Will not use rpc\n");
 			goto skip;
 		}
 
 		if (mmode == ON_OTHER_OUTPUTS)
+		       output_name = argv[2];
+
+		if (mmode == SPLIT)
 		       output_name = argv[2];
 
 		// start grpc connection
@@ -139,6 +145,11 @@ int main(int argc, char *argv[])
 			// to be first started as float.
 			client->SetAppScale(myname.toStdString(), 200, 200);
 			exit(EXIT_SUCCESS);
+			break;
+		case SPLIT:
+			// put it on the bottom
+			client->SetAppSplit(myname.toStdString(), 4, 0, 0,
+					std::string(output_name));
 			break;
 		default:
 			break;
