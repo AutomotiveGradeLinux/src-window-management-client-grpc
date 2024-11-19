@@ -1,7 +1,7 @@
 pkgconfig = import('pkgconfig')
 cpp = meson.get_compiler('cpp')
 
-qt5_dep = dependency('qt5', modules: ['Qml', 'Quick', 'Gui'])
+qt_dep = dependency('qt6', modules: ['Qml', 'Quick', 'Gui'])
 
 grpcpp_reflection_dep = cpp.find_library('grpc++_reflection')
 protoc = find_program('protoc')
@@ -31,7 +31,7 @@ grpc_deps = [
 ]
 
 window_mgnt_dep = [
-    qt5_dep,
+    qt_dep,
     grpc_deps,
 ]
 
@@ -40,14 +40,14 @@ window_mgnt_resources = [
   'qml/qml.qrc'
 ]
 
-resource_files = qt5.compile_resources(sources: window_mgnt_resources)
+resource_files = qt.compile_resources(sources: window_mgnt_resources)
 
 window_mgnt_src_headers = [
   'AglShellGrpcClient.h',
 ]
 
-moc_files = qt5.compile_moc(headers: window_mgnt_src_headers,
-                            dependencies: qt5_dep)
+moc_files = qt.compile_moc(headers: window_mgnt_src_headers,
+                            dependencies: qt_dep)
 window_mgnt_src = [
   'AglShellGrpcClient.cpp',
   'main.cpp',
