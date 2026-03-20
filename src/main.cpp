@@ -67,31 +67,50 @@ int main(int argc, char *argv[])
 	enum mode mmode = NONE;
 
 	QGuiApplication app(argc, argv);
+	QCommandLineParser parser;
+	QCoreApplication::setApplicationName(myname);
+	QCoreApplication::setApplicationVersion("1.0");
 	QQmlApplicationEngine engine;
 
 	// necessary to identify correctly by app_id
 	app.setDesktopFileName(myname);
 
-	QQmlComponent main_comp(&engine, QUrl("qrc:/Main.qml"));
+	parser.setApplicationDescription("Application to demonstrate "
+					 "window-management functionality with gRPC. \nSpecifying a particular mode will make the application "
+					 "talk with compositor through the gRPC proxy server about making the application in that mode.\nFor example "
+					 "to start as floating specify -m float or if fullscreen, -m full");
+	parser.addHelpOption();
+	parser.addVersionOption();
 
-	if (argc >= 2) {
-		const char *output_name = nullptr;
-		if (strcmp(argv[1], "float") == 0)
+	QCommandLineOption outputOption(QStringList() << "o" << "output", "Specify output name [ex. HDMI-A-1].", "output");
+	parser.addOption(outputOption);
+
+	QCommandLineOption modeOption(QStringList() << "m" << "mode", "Specify window mode. [ex. full, full_qt, on_output, position, scale, split]", "mode");
+	parser.addOption(modeOption);
+
+	parser.process(app);
+
+	if (parser.isSet(modeOption)) {
+		QString mode = parser.value(modeOption).toLower();
+		const char *output_name = NULL;
+
+		if (mode == "float") {
 			mmode = FLOAT;
-		else if (strcmp(argv[1], "full") == 0)
+		} else if (mode == "full") {
 			mmode = FULLSCREEN;
-		else if (strcmp(argv[1], "on_output") == 0)
-			mmode = ON_OTHER_OUTPUTS;
-		else if (strcmp(argv[1], "full_qt") == 0)
+		} else if (mode == "full_qt") {
 			mmode = FULLSCREEN_QT;
-		else if (strcmp(argv[1], "position") == 0)
+		} else if (mode == "on_output") {
+			mmode = ON_OTHER_OUTPUTS;
+		} else if (mode == "position") {
 			mmode = SET_FLOAT_POS;
-		else if (strcmp(argv[1], "scale") == 0)
+		} else if (mode == "scale") {
 			mmode = SCALE;
-		else if (strcmp(argv[1], "split") == 0)
+		} else if (mode == "split") {
 			mmode = SPLIT;
-		else
+		} else {
 			assert(!"Invalid mode");
+		}
 
 		if (mmode != FLOAT && mmode != FULLSCREEN && 
 		    mmode != ON_OTHER_OUTPUTS && mmode != SET_FLOAT_POS &&
@@ -100,11 +119,11 @@ int main(int argc, char *argv[])
 			goto skip;
 		}
 
-		if (mmode == ON_OTHER_OUTPUTS)
-		       output_name = argv[2];
-
-		if (mmode == SPLIT)
-		       output_name = argv[2];
+		if (mmode == ON_OTHER_OUTPUTS ||
+		    mmode == SPLIT) {
+			QString q_output_name = parser.value(outputOption).toLower();
+			output_name = q_output_name.toUtf8().toStdString().c_str();
+		}
 
 		// start grpc connection
 		GrpcClient *client = new GrpcClient();
@@ -157,8 +176,9 @@ int main(int argc, char *argv[])
 	}
 
 skip:
-	// this would allow call any of the QWindow methods
+	QQmlComponent main_comp(&engine, QUrl("qrc:/Main.qml"));
 	QWindow *win = create_window(&main_comp);
+	(void) win;
 
 	// alternatively do the load directly
 	//engine.load(QUrl(QStringLiteral("qrc:/Main.qml")));
